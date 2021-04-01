@@ -2,21 +2,32 @@
 
 Docker container that serves as base container for GFS WPS and IFS WPS containers.
 
-This container is based on [cimafoundation/deps-deploy](https://hub.docker.com/repository/docker/cimafoundation/deps-deploy) that
+This container is based on 
+[cimafoundation/deps-deploy](https://hub.docker.com/repository/docker/cimafoundation/deps-deploy) that
 provides a prebuilt environment containing WPS 4.1 and WRF 4.1.5 (both built with intel compilers)
 and various Intel runtime libraries and dependencies needed to run simulations.
 
-* wps-da.run: base container to run WPS (inherited by wps.gfs and wps.ifs)
+This is the 
+parent container of the two that will run
+WRF simulation with IFS and GFS inputs: 
+[wps-da.ifs](https://github.com/meteocima/wps-da.ifs) 
+and [wps-da.gfs](https://github.com/meteocima/wps-da.gfs)
 
+## Repo contents
 
-### Build base wps image
+### wrfda-runner.cfg
 
-These commands will build the `wps-da.run` image, that
-is the command parent of the two containers that will run:
-`wps-da.ifs` and `wps-da.gfs`
+Configuration file for wrfda-runner. Contains path of all 
+directories used by the simulation.
 
-```bash
-cd wps-da.run
-docker build .
-docker tag <resulting image id> cimafoundation/wps-da.run
-```
+### wrfda-runner
+
+Binary for wrfda-runner. If needed, it can be rebuilt from
+https://github.com/meteocima/wrfda-runner.
+
+The current version used is the latest one in `vs` branch.
+
+### common-start.sh
+
+A script that parse arguments and start wrfda-runner
+accordingly.
