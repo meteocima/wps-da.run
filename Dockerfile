@@ -1,4 +1,4 @@
-FROM cimafoundation/deps-deploy
+FROM cimafoundation/deps-deploy:v2.0.0
 
 RUN mkdir -p /wpswd
 
