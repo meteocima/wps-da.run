@@ -25,10 +25,11 @@ directories used by the simulation.
 Binary for wrfda-runner. If needed, it can be rebuilt from
 https://github.com/meteocima/wrfda-runner.
 
-Prebuilt binaries should be downloaded from
+Prebuilt binaries could be downloaded from
 https://github.com/meteocima/wrfda-runner/releases/latest
 
 You can check the version currently used with `./wrfda-runner -v`.
+
 
 ### common-start.sh
 
