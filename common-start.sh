@@ -56,7 +56,7 @@ if [[ $wps_input != "GFS" && $wps_input != "IFS" ]]; then
 fi
 
 # check wps_mode validity
-if [[ $wps_mode != 'WARMUPDA' && $wps_mode != 'WRFDA' && $wps_mode != 'WRF'  && $wps_mode != 'WRFDA' ]]; then
+if [[ $wps_mode != 'WARMUPDA' && $wps_mode != 'WRFDA' && $wps_mode != 'WARMUP'  && $wps_mode != 'WRF' ]]; then
     echo WPS_MODE argument must be one of these values: WARMUP, WRF, WARMUPDA, WRFDA
     exit 1
 fi
