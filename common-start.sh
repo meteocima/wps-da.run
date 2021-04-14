@@ -3,18 +3,19 @@
 DEPS=/BUILD/deps/out;
 PATH+=:/opt/intel/oneapi/lib/intel64/bin
 export LD_LIBRARY_PATH=$DEPS/lib:/opt/intel/oneapi/lib/intel64:/opt/intel/oneapi/lib/intel64/libfabric
+ulimit -s unlimited
 
 # This command execute WPS to pre-process data needed
 # by the various workflow at LEXIS.
 #
 # It require three arguments, specified as environment variables
 # or otherwise as command line arguments. when specified as command line arguments,
-# the order of them should be WPS_START_DATE WPS_END_DATE WPS_MODE
+# the order of them should be WPS_START_DATE WPS_MODE WPS_INPUT
 #
 # Arguments:
 #
 # - WPS_START_DATE: initial date/time of the simulation, in format YYYYMMDDHHNN
-# - WPS_END_DATE: final date/time of the simulation, in format YYYYMMDDHHNN
+# - WPS_INPUT: kind of input dataset to use. accepts these values: 'GFS' 'IFS'
 # - WPS_MODE: kind of simulation to preprocess. accepts these values: 'WARMUP' 'WRF' 'WRFDA'
 #   * WRF mode - preprocess the data needed to run a WRF simulation without data assimilation.
 #               It's actually used by Continuum and numtech simulation.
@@ -38,12 +39,10 @@ export LD_LIBRARY_PATH=$DEPS/lib:/opt/intel/oneapi/lib/intel64:/opt/intel/oneapi
 # or from environment.
 if [ "$#" -eq 4 ]; then
   export wps_start=$1
-  export wps_end=$2
-  export wps_mode=$3
-  export wps_input=$4
+  export wps_mode=$2
+  export wps_input=$3
 else
   export wps_start=$WPS_START_DATE
-  export wps_end=$WPS_END_DATE
   export wps_mode=$WPS_MODE
   export wps_input=$WPS_INPUT
 fi
@@ -125,7 +124,7 @@ if [[ $wps_mode == 'WARMUP' ]]; then
 
   warmup1_end=$warmup2_start
   warmup2_end=$wrfrun_start
-  wrfrun_end=$wps_end
+  wrfrun_end=`dateadd ${wps_start} "+2 day"`
 
   run_wps $warmup1_start $warmup1_end OL
   run_wps $warmup2_start $warmup2_end OL
@@ -135,13 +134,15 @@ fi
 
 if [[ $wps_mode == 'WRF' ]]; then
   echo "PREPROCESS DATA FOR A WRF SIMULATION"
-  run_wps $wps_start $wps_end OL
+  wrfrun_end=`dateadd ${wps_start} "+2 day"`
+  run_wps $wps_start $wrfrun_end OL
   exit 0
 fi
 
 if [[ $wps_mode == 'WRFDA' ]]; then
   echo "PREPROCESS DATA FOR A WRFDA SIMULATION"
-  run_wps $wps_start $wps_end DA
+  wrfrun_end=`dateadd ${wps_start} "+2 day"`
+  run_wps $wps_start $wrfrun_end DA
   exit 0
 fi
 
@@ -154,7 +155,7 @@ if [[ $wps_mode == 'WARMUPDA' ]]; then
 
   warmup1_end=$warmup2_start
   warmup2_end=$wrfrun_start
-  wrfrun_end=$wps_end
+  wrfrun_end=`dateadd ${wps_start} "+2 day"`
 
   run_wps $warmup1_start $warmup1_end DA
   run_wps $warmup2_start $warmup2_end DA
