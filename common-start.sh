@@ -104,6 +104,9 @@ function run_wps() {
   # publish output files
   cp -vr /wpswd/inputs/* /output/
   cp -v arguments.txt /output/
+  rm -rf $start
+  rm -rf /wpswd/inputs/*
+  rm arguments.txt
 }
 
 function dateadd() {
