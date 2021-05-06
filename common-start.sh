@@ -101,12 +101,14 @@ function run_wps() {
 
   ./wrfda-runner -outargs arguments.txt -i $wps_input -p WPS . $start $end
 
+  dir=`echo $start | cut -c 1-8`
+  echo REMOVING $dir
   # publish output files
   cp -vr /wpswd/inputs/* /output/
   cp -v arguments.txt /output/
   rm -rf $start
   rm -rf /wpswd/inputs/*
-  rm arguments.txt
+  
 }
 
 function dateadd() {
