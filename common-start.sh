@@ -34,17 +34,25 @@ ulimit -s unlimited
 #               These two set of data are the "warmup" data.
 #               The other WPS execution prepares the normal WRF simulation (with assimilation) from $WPS_START_DATE to $WPS_END_DATE
 #               Warmup data it's actually used by Risico simulation.
+# - WPS_HOURS: number of hours to use for the main forecast. It defaults to 48 if not specified.
 
 # read arguments from command line
 # or from environment.
-if [ "$#" -eq 4 ]; then
+if [ "$#" -eq 3 ]; then
   export wps_start=$1
   export wps_mode=$2
   export wps_input=$3
+  export wps_hours=48
+elif [ "$#" -eq 4 ]; then
+  export wps_start=$1
+  export wps_mode=$2
+  export wps_input=$3
+  export wps_hours=$4
 else
   export wps_start=$WPS_START_DATE
   export wps_mode=$WPS_MODE
   export wps_input=$WPS_INPUT
+  export wps_hours=${WPS_HOURS:-48}
 fi
 
 
@@ -129,7 +137,7 @@ if [[ $wps_mode == 'WARMUP' ]]; then
 
   warmup1_end=$warmup2_start
   warmup2_end=$wrfrun_start
-  wrfrun_end=`dateadd ${wps_start} "+2 day"`
+  wrfrun_end=`dateadd ${wps_start} "+$wps_hours hour"`
 
   run_wps $warmup1_start $warmup1_end OL
   run_wps $warmup2_start $warmup2_end OL
@@ -139,14 +147,14 @@ fi
 
 if [[ $wps_mode == 'WRF' ]]; then
   echo "PREPROCESS DATA FOR A WRF SIMULATION"
-  wrfrun_end=`dateadd ${wps_start} "+2 day"`
+  wrfrun_end=`dateadd ${wps_start} "+$wps_hours hour"`
   run_wps $wps_start $wrfrun_end OL
   exit 0
 fi
 
 if [[ $wps_mode == 'WRFDA' ]]; then
   echo "PREPROCESS DATA FOR A WRFDA SIMULATION"
-  wrfrun_end=`dateadd ${wps_start} "+2 day"`
+  wrfrun_end=`dateadd ${wps_start} "+$wps_hours hour"`
   run_wps $wps_start $wrfrun_end DA
   exit 0
 fi
@@ -160,7 +168,8 @@ if [[ $wps_mode == 'WARMUPDA' ]]; then
 
   warmup1_end=$warmup2_start
   warmup2_end=$wrfrun_start
-  wrfrun_end=`dateadd ${wps_start} "+2 day"`
+
+  wrfrun_end=`dateadd ${wps_start} "+$wps_hours hour"`
 
   run_wps $warmup1_start $warmup1_end DA
   run_wps $warmup2_start $warmup2_end DA
