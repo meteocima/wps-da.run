@@ -108,7 +108,7 @@ function run_wps() {
   mode=$3
 
   cd /wpswd
-  cp -v /scripts/* .
+  cp -rv /scripts/* .
   mkdir -p inputs
 
   ./wrfda-runner -outargs arguments.txt -i $wps_input -p WPS . $start $end
