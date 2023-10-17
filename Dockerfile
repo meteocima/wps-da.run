@@ -1,10 +1,8 @@
 FROM cimafoundation/deps-deploy:v2.0.0
 
-RUN mkdir -p /wpswd
+RUN mkdir -p /scripts
 
-WORKDIR /wpswd
-
-RUN mkdir inputs
+WORKDIR /scripts
 
 ADD common-start.sh common-start.sh
 ADD wrfda-runner wrfda-runner
